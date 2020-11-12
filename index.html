@@ -26,6 +26,19 @@
         left: 0;
         height: 100%;
       }
+      .video-container {
+          position: relative;
+          width: 100%;
+          height: 0;
+          padding-bottom: 56.25%;
+      }
+      .video-iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+      }
     </style>
   </head>
   <body>
@@ -37,7 +50,8 @@
             <button
               type="button"
               class="btn btn-success"
-              id="docs-button"
+              data-toggle="modal"
+              data-target="#docs-modal"
             >
               説明
             </button>
@@ -51,9 +65,82 @@
           </h1>
         </div>
       </div>
+      <div class="modal fade" id="docs-modal" tabindex="-1" role="dialog" aria-labelledby="docsModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">オセロ 一回目</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="video-container">
+              <iframe src="https://www.youtube.com/embed/AIG2HugrZtM" 
+              frameborder="0" allowfullscreen class="video-iframe"></iframe>
+              </div>
+              <h2 id="_1">あらすじ</h2>
+              <p>今回のタスクは下記のとおりです。</p>
+              <ol>
+              <li>オセロのマス目を線で引く</li>
+              <li>コマをマウスプレスで置く</li>
+              </ol>
+              <p>そこまで行ってみたいと思います！頑張りましょう。</p>
+              <h2 id="_2">仕様・ヒント</h2>
+              <h3 id="_3">盤面</h3>
+              <p>まずは<code>setup</code>の中で<code>createCanvas</code>を使って400x400ピクセルのキャンバスを用意しましょう。</p>
+              <div class="codehilite"><pre><span class="kd">function</span> <span class="nx">setup</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">createCanvas</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">);</span>
+              <span class="p">}</span>
+              </pre></div>
+
+              <p>オセロには8x8の盤面が必要です。400x400ピクセルのキャンバスがありますので、マスの大きさは分かり易いと思います。</p>
+              <h4 id="_4">背景</h4>
+              <p><code>draw</code>では、まず1枚前のフレームの画像を消して、緑に塗りたいと思います。おすすめは<code>0,140,0</code>です。</p>
+              <div class="codehilite"><pre><span class="kd">function</span> <span class="nx">draw</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">background</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">140</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+              </pre></div>
+
+              <p>▶︎ この段階で実行すると、400x400の緑色の四角が見えるはずです。</p>
+              <h4 id="_5">線を一本</h4>
+              <p>盤面の線は黒で描きたいと思いますので、<code>stroke</code>で色を変える必要はありません。</p>
+              <p>まずは縦線を一本描きましょうか？<code>line</code>関数を使って、<code>x</code>がマスの幅というところで縦線を描きましょう。</p>
+              <div class="codehilite"><pre><span class="c1">// lineの使い方</span>
+              <span class="nx">line</span><span class="p">(</span><span class="nx">start_x</span><span class="p">,</span> <span class="nx">stary_y</span><span class="p">,</span> <span class="nx">finish_x</span><span class="p">,</span> <span class="nx">finish_y</span><span class="p">);</span>
+
+              <span class="c1">// 縦線の描き方</span>
+              <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">square_size</span><span class="p">;</span> <span class="c1">// square_sizeがマスの幅になっているイメージです</span>
+              <span class="nx">line</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+              </pre></div>
+
+              <p>縦線ですので、yは<code>0</code>からキャンバスの縦長まで。<code>height</code>変数はp5jsで用意されていて、常にキャンバスの縦長が取得できます。</p>
+              <p>▶︎ この段階で実行すると、400x400の緑色の四角に黒い縦線が1本が付いているのが見えるはずです。</p>
+              <h4 id="_6">縦線（全部）</h4>
+              <p><code>line</code>呼び出しを16回などは反則とします。ここは<code>for</code>ループを使いましょう。</p>
+              <p>いろんな<code>x</code>で縦線を描きたいですね。<code>x=0</code>や<code>x=width</code>（キャンバスの横幅）には線があってもなくても構いませんが、その間の7本は確実に描きたいですね。</p>
+              <p>ループで<code>x</code>を増やしながら線を描いていきましょう！</p>
+              <p>まずは、一つのループで縦線を全部描きましょう。</p>
+              <div class="codehilite"><pre><span class="k">for</span><span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+                <span class="nx">line</span><span class="p">(</span><span class="nx">i</span> <span class="o">*</span> <span class="nx">square_size</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">i</span> <span class="o">*</span> <span class="nx">square_size</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+              <span class="p">}</span>
+              </pre></div>
+
+              <p>▶︎ この段階で実行すると、400x400の緑色の四角に黒い縦線が7本付いているのが見えるはずです。</p>
+              <h4 id="_7">横線（全部）</h4>
+              <p>縦線と同じく<code>for</code>ループを使って描きましょう。<code>x</code>と<code>y</code>の引数をそれぞれ置き換えると、横線になります。</p>
+              <p>使う<code>for</code>は同じですので、<code>x</code>と<code>y</code>を反転した<code>line</code>呼び出しを横線に使った<code>for</code>の中に入れてもいいですね。</p>
+              <p>▶︎ この段階で実行すると、400x400の緑色の四角に黒い縦線・横線が7本ずつ付いているのが見えるはずです。</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row" id="big-row">
         <div class="col-sm" id="editor-container">
-          <div id="editor">//オセロ 一回目。今回はオセロ のマス目を線で引く。コマをマウスプレスで置く。ところまで行ってみたいと思います。
+          <div id="editor">// オセロ 一回目。今回はオセロ のマス目を線で引く。
+// コマをマウスプレスで置く。ところまで行ってみたいと思います。
 let sketch = function(p) {
 
   let col; // 横方向に何マス目に円を描くか
@@ -81,7 +168,8 @@ let sketch = function(p) {
     }
   }
   p.mousePressed = function() {
-    // クリックした時のマウス座標をマスの長さで割って切り捨てると何マス目かがわかる
+    // クリックした時のマウス座標をマスの長さで割って
+    // 切り捨てると何マス目かがわかる
     col = p.floor(p.mouseX / 50);
     row = p.floor(p.mouseY / 50);
   }
