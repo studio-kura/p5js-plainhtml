@@ -141,40 +141,35 @@
         <div class="col-sm" id="editor-container">
           <div id="editor">// オセロ 一回目。今回はオセロ のマス目を線で引く。
 // コマをマウスプレスで置く。ところまで行ってみたいと思います。
-let sketch = function(p) {
 
-  let col; // 横方向に何マス目に円を描くか
-  let row; // 縦方向に何マス目に円を描くか
+let col; // 横方向に何マス目に円を描くか
+let row; // 縦方向に何マス目に円を描くか
 
-  p.setup = function() {
-    var canvas = p.createCanvas(400, 400);
-    canvas.parent('sketch-container');
-  }
+function setup() {
+  createCanvas(400, 400);
+}
 
-  p.draw = function() {
-    p.background(0,140,0);
-    //for文の中にfor文を記述し線を縦横に８本ずつ描いてください。
-    for(let i = 0; i < 8; i++){
-      for(let j = 0; j < 8; j++){
-        p.line(j * 50, 0, j * 50, p.height);
-        p.line(0, i * 50, p.width, i * 50);
+function draw() {
+  background(0,140,0);
+  //for文の中にfor文を記述し線を縦横に８本ずつ描いてください。
+  for(let i = 0; i < 8; i++){
+    for(let j = 0; j < 8; j++){
+      line(j * 50, 0, j * 50, height);
+      line(0, i * 50, width, i * 50);
 
-        //升目状に丸が表示される様にしましょう
-        if(j == col && i == row){
-           p.fill(255);
-           p.ellipse(j * 50 + 25, i* 50 + 25, 40,40);
-        }
+      //升目状に丸が表示される様にしましょう
+      if(j == col && i == row){
+         fill(255);
+         ellipse(j * 50 + 25, i* 50 + 25, 40,40);
       }
     }
   }
-  p.mousePressed = function() {
-    // クリックした時のマウス座標をマスの長さで割って
-    // 切り捨てると何マス目かがわかる
-    col = p.floor(p.mouseX / 50);
-    row = p.floor(p.mouseY / 50);
-  }
-};
-let myp5 = new p5(sketch);
+}
+mousePressed = function() {
+  // クリックした時のマウス座標をマスの長さで割って切り捨てると何マス目かがわかる
+  col = floor(mouseX / 50);
+  row = floor(mouseY / 50);
+}
 </div>
         </div>
         <div class="col-sm" id="sketch-container">
@@ -191,6 +186,12 @@ let myp5 = new p5(sketch);
 
     <script type="text/javascript">
       $(document).ready(function(){
+        const wordSeparators = [
+          " ", "\n", "(", ")", "[", "]", "{", "}", "\"", "'", ";", ".", ",", "%", "+", "-", "*", "/", "|", "&", "=", "\\", "?", "!", "<", ">"
+        ];
+        const reservedWords = [
+          "alpha", "blue", "brightness", "color", "green", "hue", "lerpColor", "lightness", "red", "saturation", "background", "clear", "colorMode", "fill", "noFill", "noStroke", "stroke", "erase", "noErase", "arc", "ellipse", "circle", "line", "point", "quad", "rect", "square", "triangle", "ellipseMode", "noSmooth", "rectMode", "smooth", "strokeCap", "strokeJoin", "strokeWeight", "bezier", "bezierDetail", "bezierPoint", "bezierTangent", "curve", "curveDetail", "curveTightness", "curvePoint", "curveTangent", "beginContour", "beginShape", "bezierVertex", "curveVertex", "endContour", "endShape", "quadraticVertex", "vertex", "plane", "box", "sphere", "cylinder", "cone", "ellipsoid", "torus", "loadModel", "model", "HALF_PI", "PI", "QUARTER_PI", "TAU", "TWO_PI", "DEGREES", "RADIANS", "print", "frameCount", "deltaTime", "focused", "cursor", "frameRate", "noCursor", "displayWidth", "displayHeight", "windowWidth", "windowHeight", "windowResized", "width", "height", "fullscreen", "pixelDensity", "displayDensity", "getURL", "getURLPath", "getURLParams", "preload", "setup", "draw", "remove", "disableFriendlyErrors", "noLoop", "loop", "isLooping", "push", "pop", "redraw", "p5", "select", "selectAll", "removeElements", "changed", "input", "createDiv", "createP", "createSpan", "createImg", "createA", "createSlider", "createButton", "createCheckbox", "createSelect", "createRadio", "createColorPicker", "createInput", "createFileInput", "createVideo", "createAudio", "VIDEO", "AUDIO", "createCapture", "createElement", "createCanvas", "resizeCanvas", "noCanvas", "createGraphics", "blendMode", "drawingContext", "setAttributes", "applyMatrix", "resetMatrix", "rotate", "rotateX", "rotateY", "rotateZ", "scale", "shearX", "shearY", "translate", "storeItem", "getItem", "clearStorage", "removeItem", "createStringDict", "createNumberDict", "append", "arrayCopy", "concat", "reverse", "shorten", "shuffle", "sort", "splice", "subset", "float", "int", "str", "boolean", "byte", "char", "unchar", "hex", "unhex", "join", "match", "matchAll", "nf", "nfc", "nfp", "nfs", "split", "splitTokens", "trim", "deviceOrientation", "accelerationX", "accelerationY", "accelerationZ", "pAccelerationX", "pAccelerationY", "pAccelerationZ", "rotationX", "rotationY", "rotationZ", "pRotationX", "pRotationY", "pRotationZ", "turnAxis", "setMoveThreshold", "setShakeThreshold", "deviceMoved", "deviceTurned", "deviceShaken", "keyIsPressed", "key", "keyCode", "keyPressed", "keyReleased", "keyTyped", "keyIsDown", "movedX", "movedY", "mouseX", "mouseY", "pmouseX", "pmouseY", "winMouseX", "winMouseY", "pwinMouseX", "pwinMouseY", "mouseButton", "mouseIsPressed", "mouseMoved", "mouseDragged", "mousePressed", "mouseReleased", "mouseClicked", "doubleClicked", "mouseWheel", "requestPointerLock", "exitPointerLock", "touches", "touchStarted", "touchMoved", "touchEnded", "createImage", "saveCanvas", "saveFrames", "loadImage", "image", "tint", "noTint", "imageMode", "pixels", "blend", "copy", "filter", "get", "loadPixels", "set", "updatePixels", "loadJSON", "loadStrings", "loadTable", "loadXML", "loadBytes", "httpGet", "httpPost", "httpDo", "createWriter", "save", "saveJSON", "saveStrings", "saveTable", "day", "hour", "minute", "millis", "month", "second", "year", "abs", "ceil", "constrain", "dist", "exp", "floor", "lerp", "log", "mag", "map", "max", "min", "norm", "pow", "round", "sq", "sqrt", "fract", "createVector", "noise", "noiseDetail", "noiseSeed", "randomSeed", "random", "randomGaussian", "acos", "asin", "atan", "atan2", "cos", "sin", "tan", "degrees", "radians", "angleMode", "textAlign", "textLeading", "textSize", "textStyle", "textWidth", "textAscent", "textDescent", "loadFont", "text", "textFont", "orbitControl", "debugMode", "noDebugMode", "ambientLight", "specularColor", "directionalLight", "pointLight", "lights", "lightFalloff", "spotLight", "noLights", "loadShader", "createShader", "shader", "resetShader", "normalMaterial", "texture", "textureMode", "textureWrap", "ambientMaterial", "emissiveMaterial", "specularMaterial", "shininess", "camera", "perspective", "ortho", "frustum", "createCamera", "setCamera",
+        ];
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/javascript");
@@ -200,7 +201,41 @@ let myp5 = new p5(sketch);
         });
 
         function runCode() {
-          var currentCode = editor.getValue();
+          const editorLines = editor.getValue().split("\n");
+          let currentCode = "let sketch = function(p) {\n";
+          editorLines.forEach(function(line) {
+            console.log(line);
+            if (line.includes("function") && line.includes("setup")) {
+              line = line.replace("function", "placeholder6754325");
+              line = line.replace("setup", "function");
+              line = line.replace("placeholder6754325", "p.setup =");
+            }
+            if (line.includes("function") && line.includes("draw")) {
+              line = line.replace("function", "placeholder6754325");
+              line = line.replace("draw", "function");
+              line = line.replace("placeholder6754325", "p.draw =");
+            }
+            reservedWords.forEach(function(word) {
+              const idx = line.indexOf(word);
+              if (idx != -1) {
+                prevChar = line.charAt(idx - 1);
+                nextChar = line.charAt(idx + word.length);
+                if (
+                  idx == 0 ||
+                  ( prevChar != "." && wordSeparators.includes(prevChar) )
+                  && wordSeparators.includes(nextChar)
+                ) {
+                  line = line.replace(word, "p." + word);
+                }
+              }
+            });
+            if (line.includes("p.createCanvas")) {
+              line = "var canvas = " + line + "\n" + "canvas.parent('sketch-container');";
+            }
+            currentCode += line + "\n";
+          });
+          currentCode += "};\nlet myp5 = new p5(sketch);";
+
           console.log(currentCode);
           // console.log($('.p5Canvas')[0]);
           $('#sketch-container').empty();
